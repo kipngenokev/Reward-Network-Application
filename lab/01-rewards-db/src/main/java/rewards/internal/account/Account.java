@@ -222,7 +222,7 @@ public class Account {
 	 * 
 	 * @param amount
 	 *            the total amount to contribute
-	 * @param contribution
+//	 * @param contribution
 	 *            the contribution summary
 	 */
 	public AccountContribution makeContribution(MonetaryAmount amount) {

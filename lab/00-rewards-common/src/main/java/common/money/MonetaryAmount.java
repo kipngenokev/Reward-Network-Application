@@ -38,7 +38,7 @@ public class MonetaryAmount implements Serializable {
 	}
 
 	@SuppressWarnings("unused")
-	private MonetaryAmount() {
+	public MonetaryAmount() {
 	}
 
 	private void initValue(BigDecimal value) {

@@ -50,9 +50,24 @@ public class RewardNetworkImpl implements RewardNetwork {
 	}
 
 	public RewardConfirmation rewardAccountFor(Dining dining) {
-		// TODO-07: Write code here for rewarding an account according to
-		//          the sequence diagram in the lab document
-		// TODO-08: Return the corresponding reward confirmation
-		return null;
+        // Step 1: Find the account by credit card number
+        var account = accountRepository.findByCreditCard(dining.getCreditCardNumber());
+        // Step 2: Find the restaurant by merchant number
+        var restaurant = restaurantRepository.findByMerchantNumber(String.valueOf(dining.getMerchantNumber()));
+
+        // Step 3: Restaurant calculates the benefit for the account and dining
+        var benefit = restaurant.calculateBenefitFor(account, dining);
+
+        // Step 4: Account makes a contribution (using the calculated benefit)
+        var contribution = account.makeContribution(benefit);
+
+        // Step 5: Update beneficiaries via AccountRepository (per sequence diagram)
+        accountRepository.updateBeneficiaries(account);
+
+        // Step 6: RewardRepository confirms the reward (using the contribution and dining)
+        var confirmation = rewardRepository.confirmReward(contribution, dining);
+
+        // Step 7: Return the RewardConfirmation
+        return confirmation;
 	}
 }

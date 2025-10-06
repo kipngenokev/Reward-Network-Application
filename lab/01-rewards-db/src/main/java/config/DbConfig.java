@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -60,7 +62,7 @@ public class DbConfig {
 	 * Create an EntityManagerFactoryBean.
 	 */
 	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory(JpaVendorAdapter adapter) {
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory(@Autowired @Qualifier("hibernateVendorAdapter") JpaVendorAdapter adapter) {
 
 		// Tell the underlying implementation what type of database we are using - a
 		// hint to generate better SQL

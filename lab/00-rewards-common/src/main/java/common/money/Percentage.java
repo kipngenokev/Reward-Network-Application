@@ -44,7 +44,7 @@ public class Percentage implements Serializable {
 	}
 
 	@SuppressWarnings("unused")
-	private Percentage() {
+	public Percentage() {
 	}
 
 	private void initValue(BigDecimal value) {
