@@ -1,9 +1,13 @@
 package rewards.internal;
 
+import common.money.MonetaryAmount;
+import rewards.AccountContribution;
 import rewards.Dining;
 import rewards.RewardConfirmation;
 import rewards.RewardNetwork;
+import rewards.internal.account.Account;
 import rewards.internal.account.AccountRepository;
+import rewards.internal.restaurant.Restaurant;
 import rewards.internal.restaurant.RestaurantRepository;
 import rewards.internal.reward.RewardRepository;
 
@@ -50,24 +54,11 @@ public class RewardNetworkImpl implements RewardNetwork {
 	}
 
 	public RewardConfirmation rewardAccountFor(Dining dining) {
-        // Step 1: Find the account by credit card number
-        var account = accountRepository.findByCreditCard(dining.getCreditCardNumber());
-        // Step 2: Find the restaurant by merchant number
-        var restaurant = restaurantRepository.findByMerchantNumber(String.valueOf(dining.getMerchantNumber()));
-
-        // Step 3: Restaurant calculates the benefit for the account and dining
-        var benefit = restaurant.calculateBenefitFor(account, dining);
-
-        // Step 4: Account makes a contribution (using the calculated benefit)
-        var contribution = account.makeContribution(benefit);
-
-        // Step 5: Update beneficiaries via AccountRepository (per sequence diagram)
+        Account account = accountRepository.findByCreditCard(dining.getCreditCardNumber());
+        Restaurant restaurant = restaurantRepository.findByMerchantNumber(dining.getMerchantNumber());
+        MonetaryAmount amount = restaurant.calculateBenefitFor(account, dining);
+        AccountContribution contribution = account.makeContribution(amount);
         accountRepository.updateBeneficiaries(account);
-
-        // Step 6: RewardRepository confirms the reward (using the contribution and dining)
-        var confirmation = rewardRepository.confirmReward(contribution, dining);
-
-        // Step 7: Return the RewardConfirmation
-        return confirmation;
+        return rewardRepository.confirmReward(contribution, dining);
 	}
 }
